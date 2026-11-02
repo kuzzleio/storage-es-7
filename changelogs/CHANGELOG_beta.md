@@ -1,3 +1,15 @@
+## [1.1.0-beta.1](https://github.com/kuzzleio/storage-es-7/compare/v1.0.0...v1.1.0-beta.1) (2026-11-02)
+
+### Dependencies
+
+* **deps:** drop bluebird ([3187b29](https://github.com/kuzzleio/storage-es-7/commit/3187b294f44fd264deb99f4af3c415ea27bc22fc))
+
+### Bug Fixes
+
+* keep lodash types out of the shipped declarations ([10314f0](https://github.com/kuzzleio/storage-es-7/commit/10314f06ff12d1e6b861c4ca7aa95d37685ff3fa))
+* map the engines' actual error messages to storage errors ([c95eb36](https://github.com/kuzzleio/storage-es-7/commit/c95eb36025c3be2a2bfb6371d9b3065fa128966d))
+* refuse an Elasticsearch 8 cluster and an OpenSearch one ([5468b63](https://github.com/kuzzleio/storage-es-7/commit/5468b63e24b49224bb115ad4785ff4d6bcd33c94))
+
 ## 1.0.0-beta.1 (2026-10-30)
 
 ### Features
