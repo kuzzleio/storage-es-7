@@ -46,9 +46,7 @@ import type {
 
 import assert from "assert";
 
-import Bluebird from "bluebird";
 import ms from "ms";
-import semver from "semver";
 
 import type { StorageEngineElasticsearch, ValidatedTarget } from "kuzzle";
 import {
@@ -60,12 +58,14 @@ import {
 
 import {
   assertIsObject,
+  delay,
   didYouMean,
   extractFields,
   isPlainObject,
   randomNumber,
 } from "./helpers";
 import ESWrapper from "./esWrapper";
+import { isSupportedElasticsearch } from "./version";
 
 const SCROLL_CACHE_PREFIX = "_docscroll_";
 
@@ -225,12 +225,8 @@ export class ES7 {
       body: { version },
     } = await this._client.info();
 
-    if (version) {
-      const coerced = semver.coerce(version.number);
-
-      if (coerced === null || !semver.satisfies(coerced, ">= 7.0.0")) {
-        throw storageError.get("version_mismatch", version.number);
-      }
+    if (version && !isSupportedElasticsearch(version)) {
+      throw storageError.get("version_mismatch", version.number);
     }
 
     this._esVersion = version;
@@ -628,7 +624,9 @@ export class ES7 {
         Object.entries(innerHits).map(
           async ([name, innerHit]): Promise<[string, unknown[]]> => [
             name,
-            await Bluebird.map(innerHit.hits.hits, formatHit),
+            await Promise.all(
+              innerHit.hits.hits.map((hit: JSONObject) => formatHit(hit)),
+            ),
           ],
         ),
       );
@@ -636,12 +634,11 @@ export class ES7 {
       return Object.fromEntries(formatted);
     }
 
-    const hits = await Bluebird.map(
-      body.hits.hits,
-      async (hit: JSONObject) => ({
+    const hits = await Promise.all(
+      body.hits.hits.map(async (hit: JSONObject) => ({
         inner_hits: await formatInnerHits(hit.inner_hits),
         ...(await formatHit(hit)),
-      }),
+      })),
     );
 
     return {
@@ -1464,7 +1461,7 @@ export class ES7 {
     let scrollId: string | undefined;
 
     try {
-      results = await new Bluebird<unknown[]>((resolve, reject) => {
+      results = await new Promise<unknown[]>((resolve, reject) => {
         this._client.search(
           esRequest,
           async function getMoreUntilDone(
@@ -1871,7 +1868,10 @@ export class ES7 {
    * @param indexSettings the index settings
    * @returns {{index: *}} a new index settings with only allowed settings.
    */
-  getAllowedIndexSettings(indexSettings: JSONObject) {
+  getAllowedIndexSettings(indexSettings: JSONObject): { index: JSONObject } {
+    // Declared rather than inferred: the inferred type is lodash's `Omit`,
+    // and the declarations this package ships must not need `@types/lodash`,
+    // a devDependency.
     return {
       index: _.omit(indexSettings.index, [
         "creation_date",
@@ -2328,7 +2328,7 @@ export class ES7 {
    */
   async deleteIndexes(indexes: string[] = []) {
     if (indexes.length === 0) {
-      return Bluebird.resolve([]);
+      return [];
     }
     const deleted = new Set<string>();
 
@@ -3855,7 +3855,7 @@ export class ES7 {
   async waitForElasticsearch() {
     if (esState !== esStateEnum.NONE) {
       while (esState !== esStateEnum.OK) {
-        await Bluebird.delay(1000);
+        await delay(1000);
       }
 
       return;
@@ -3879,10 +3879,10 @@ export class ES7 {
           this.logger.info(
             `[ℹ] Still waiting for Elasticsearch: ${health.body.number_of_pending_tasks} cluster tasks remaining`,
           );
-          await Bluebird.delay(1000);
+          await delay(1000);
         }
       } catch {
-        await Bluebird.delay(1000);
+        await delay(1000);
       }
     }
   }

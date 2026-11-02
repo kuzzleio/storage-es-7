@@ -32,7 +32,10 @@ import type { ES7Driver } from "kuzzle-storage-es-7";
 type StorageClient = ReturnType<typeof ES7Driver.createNativeClient>;
 
 const client = app.storage.storageClient as StorageClient;
-const { count } = await client.count({ index: "@&nyc-open-data.yellow-taxi" });
+// The 7.x client wraps every response in `body`
+const {
+  body: { count },
+} = await client.count({ index: "@&nyc-open-data.yellow-taxi" });
 ```
 
 A type-only import loads nothing at runtime. Your application needs the package as a dependency for TypeScript to find it: with npm, the copy Kuzzle installs is usually hoisted, but declare it to rely on it (at the version `npm ls kuzzle-storage-es-7` shows).
