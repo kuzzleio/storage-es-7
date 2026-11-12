@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/kuzzleio/storage-es-7/compare/v1.1.0...v1.1.1) (2026-11-12)
+
+### Bug Fixes
+
+* report why the engine does not answer at startup, and fail on what waiting cannot fix ([6bf54f8](https://github.com/kuzzleio/storage-es-7/commit/6bf54f885fa345c847adda27e891279cb9849a9e)), closes [kuzzleio/storage-es-8#9](https://github.com/kuzzleio/storage-es-8/issues/9)
+
 ## [1.1.0](https://github.com/kuzzleio/storage-es-7/compare/v1.0.0...v1.1.0) (2026-11-03)
 
 ### Dependencies
