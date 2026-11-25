@@ -1,3 +1,13 @@
+## [1.2.0-beta.2](https://github.com/kuzzleio/storage-es-7/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2026-11-25)
+
+### Features
+
+* **search:** allow min_score and track_scores, add search.additionalBodyKeys ([aa74059](https://github.com/kuzzleio/storage-es-7/commit/aa7405959cf85f5aeba9d858624752719b321f26))
+
+### Bug Fixes
+
+* **deps:** declare the kuzzle peer dependency optional ([920df44](https://github.com/kuzzleio/storage-es-7/commit/920df445abec6983cad5d21e7311a322c8c6e556))
+
 ## [1.2.0-beta.1](https://github.com/kuzzleio/storage-es-7/compare/v1.1.1...v1.2.0-beta.1) (2026-11-23)
 
 ### Features
