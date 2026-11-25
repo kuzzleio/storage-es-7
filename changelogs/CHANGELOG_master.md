@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/kuzzleio/storage-es-7/compare/v1.1.1...v1.2.0) (2026-11-23)
+
+### Features
+
+* report the re-indexation task id from updateCollection ([db5dd41](https://github.com/kuzzleio/storage-es-7/commit/db5dd41d490dba0fb9545ee70eeadf096dd96b9f))
+
 ## [1.1.1](https://github.com/kuzzleio/storage-es-7/compare/v1.1.0...v1.1.1) (2026-11-12)
 
 ### Bug Fixes
